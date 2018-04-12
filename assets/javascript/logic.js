@@ -31,3 +31,48 @@ var config = {
  });  
 
 
+traindb.ref().on("child_added", function(snapshot){
+    var trainName = snapshot.val().trainName;
+    console.log(trainName);
+
+    var destination = snapshot.val().destination;
+    console.log(destination);
+
+    var trainTime = snapshot.val().trainTime;
+    console.log(trainTime);
+
+    var freq = snapshot.val().freq;
+    console.log(freq);
+    
+    var trainTimeConverted = moment(trainTime, "HH:mm").subtract(1, "years");
+    console.log(trainTimeConverted);
+
+    var currentTime = moment();
+    console.log("CURRENT TIME: " + moment(currentTime).format("hh:mm"));
+
+    var diffTime = moment(trainTimeConverted).diff(moment(nextArrival), "minutes");
+    console.log("DIFFERENCE IN TIME: " + diffTime);
+
+    var tRemain = diffTime % freq;
+    console.log(tRemain);
+
+    var minAway = freq - tRemain;
+    console.log("MINUTES TILL TRAIN: " + minAway);
+
+    var nextArrival = moment(currentTime).add(minAway, "minutes").format("hh:mm");
+    console.log("ARRIVAL TIME: " + moment(nextArrival).format("hh:mm"));
+
+    var tr = document.createElement('tr');
+    tr.className = "text-center";
+    console.log(tr);
+    tr.innerHTML = `<td>${trainName}</td>
+                    <td>${destination}</td>
+                    <td>${freq}</td>
+                    <td>${nextArrival}</td>
+                    <td>${minAway}</td>`;
+
+            $(".trainDataTable").append(tr);
+
+
+
+})
